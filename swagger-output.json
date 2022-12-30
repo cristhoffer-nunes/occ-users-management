@@ -1,0 +1,131 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "User Management API",
+    "description": "API responsible for informing whether a user exists/doesn't exist and whether it is active/inactive according to the selected environment.",
+    "version": "1.0.0",
+    "contact": {
+      "email": "cristhoffer.santos@jbq.global"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:3333",
+  "basePath": "/v1/api",
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "Enter the token with the `Bearer ` prefix."
+    }
+  },
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Creating access and logging in"
+    },
+    {
+      "name": "user",
+      "description": "Query users according to the selected environment"
+    },
+    {
+      "name": "environment",
+      "description": "Creating an Environment and Environment Query"
+    }
+  ],
+  "paths": {
+    "/auth": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Authenticate",
+        "description": "Authentication object is required to generate the authentication token.",
+        "parameters": [
+          {
+            "name": "authObject",
+            "in": "body",
+            "schema": {
+              "$ref": "#components/schemas/Auth"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Invalid e-mail address or password."
+          },
+          "500": {
+            "description": "Internal server error."
+          },
+          "200": {
+            "description": "Ok"
+          }
+        }
+      }
+    },
+    "/user": {
+      "post": {
+        "tags": ["user"],
+        "summary": "Get profile",
+        "description": "Check if a user exists in the environment and if he is active or inactive.",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "userObject",
+            "in": "body",
+            "schema": {
+              "$ref": "#components/schemas/User"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Oops! Invalid field. Check your body."
+          },
+          "401": {
+            "description": "Invalid e-mail address or password."
+          },
+          "403": {
+            "description": "Request denied."
+          },
+          "404": {
+            "description": "Profile not found!"
+          },
+          "500": {
+            "description": "Internal server error."
+          },
+          "200": {
+            "description": "Ok"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Auth": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "your_email@mail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "your_password"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "user_email@mail.com"
+          }
+        }
+      }
+    }
+  }
+}
