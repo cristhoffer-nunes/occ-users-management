@@ -3,6 +3,7 @@ import { routerGetProfile } from "../routes/profile"
 import { routerGetEnvironments } from "../routes/environment"
 import { routerSourceClient } from "../routes/oracle"
 import { routerUser } from "../routes/user"
+import { routerAuth } from "../routes/auth"
 
 const app = express()
 
@@ -12,5 +13,6 @@ app.use(routerGetProfile)
 app.use(routerGetEnvironments)
 app.use(routerSourceClient)
 app.use(routerUser)
+app.use(routerAuth)
 
 export { app }
