@@ -1,9 +1,10 @@
 import { Router } from "express"
+import { AuthorizationMiddleware } from "../middleware/Auth"
 import { getUserController } from "../useCases/User"
 
 const routerUser = Router()
 
-routerUser.post("/user", (req, res) => {
+routerUser.post("/user", AuthorizationMiddleware, (req, res) => {
   return getUserController.handle(req, res)
 })
 
