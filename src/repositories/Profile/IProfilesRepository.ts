@@ -1,5 +1,5 @@
-import { Oracle } from "../../entities/Oracle"
-import { Profile } from "../../entities/Profile"
+import { Oracle } from "../../entities/Oracle/Oracle"
+import { Profile } from "../../entities/Profile/Profile"
 
 export interface IProfilesRepository {
   getProfile(

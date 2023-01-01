@@ -1,6 +1,6 @@
 import { IEnvironmentsRepository } from "../IEnvironmentsRepository"
 import { PrismaClient } from "@prisma/client"
-import { Environment } from "../../../entities/Environment"
+import { Environment } from "../../../entities/Environment/Environment"
 
 export class PrismaEnvironmentRepository implements IEnvironmentsRepository {
   private prisma = new PrismaClient({

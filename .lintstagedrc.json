@@ -1,3 +1,7 @@
 {
-  "*.ts": ["npx eslint 'src/**' --fix", "npx prettier --write 'src/**' "]
+  "*.ts": [
+    "npx eslint 'src/**' --fix",
+    "npx prettier --write 'src/**' ",
+    "git add ."
+  ]
 }

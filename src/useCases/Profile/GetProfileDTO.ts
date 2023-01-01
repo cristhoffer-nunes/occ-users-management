@@ -1,4 +1,4 @@
-import { Oracle } from "../../entities/Oracle"
+import { Oracle } from "../../entities/Oracle/Oracle"
 
 export interface IGetProfileDTO {
   email: string

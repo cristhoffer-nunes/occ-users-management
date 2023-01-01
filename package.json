@@ -46,6 +46,7 @@
     "prisma": "^4.8.0",
     "swagger-autogen": "^2.22.0",
     "ts-jest": "^29.0.3",
-    "ts-node-dev": "^2.0.0"
+    "ts-node-dev": "^2.0.0",
+    "vitest": "^0.26.3"
   }
 }

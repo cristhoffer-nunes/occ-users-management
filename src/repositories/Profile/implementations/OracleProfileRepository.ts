@@ -1,6 +1,6 @@
-import { Profile } from "../../../entities/Profile"
+import { Profile } from "../../../entities/Profile/Profile"
 import { IProfilesRepository } from "../IProfilesRepository"
-import { Oracle } from "../../../entities/Oracle"
+import { Oracle } from "../../../entities/Oracle/Oracle"
 import axios from "axios"
 
 export class OracleProfilesRepository implements IProfilesRepository {

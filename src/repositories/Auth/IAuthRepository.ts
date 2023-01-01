@@ -1,4 +1,4 @@
-import { Auth } from "../../entities/Auth"
+import { Auth } from "../../entities/Auth/Auth"
 
 export interface IAuthRepository {
   authenticate(
