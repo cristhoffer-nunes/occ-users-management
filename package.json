@@ -8,7 +8,12 @@
     "build": "tsc --build",
     "husky:prepare": "husky install",
     "swagger-autogen": "ts-node-dev ./swagger.ts",
-    "test": "jest"
+    "test": "npx jest --passWithNoTests --silent --noStackTrace --runInBand",
+    "test:verbose": "npx jest --passWithNoTests --runInBand",
+    "test:unit": "npm test -- --watch -c jest-unit-config.js",
+    "test:integration": "npm test -- --watch -c jest-integration-config.js",
+    "test:staged": "npm test -- --findRelatedTests",
+    "test:ci": "npm test -- --coverage"
   },
   "keywords": [],
   "author": "",
