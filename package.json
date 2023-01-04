@@ -8,8 +8,7 @@
     "build": "tsc --build",
     "husky:prepare": "husky install",
     "swagger-autogen": "ts-node-dev ./swagger.ts",
-    "test": "vitest",
-    "test:coverage": "vitest --coverage"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -44,12 +43,12 @@
     "eslint-config-prettier": "^8.5.0",
     "git-commit-msg-linter": "^4.5.0",
     "husky": "^8.0.2",
+    "jest": "^29.3.1",
     "lint-staged": "^13.1.0",
     "prettier": "^2.8.1",
     "prisma": "^4.8.0",
     "swagger-autogen": "^2.22.0",
     "ts-jest": "^29.0.3",
-    "ts-node-dev": "^2.0.0",
-    "vitest": "^0.26.3"
+    "ts-node-dev": "^2.0.0"
   }
 }

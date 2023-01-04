@@ -1,4 +1,3 @@
-import { test, expect } from "vitest"
 import { Oracle } from "./Oracle"
 
 test("Create an auth instance", () => {

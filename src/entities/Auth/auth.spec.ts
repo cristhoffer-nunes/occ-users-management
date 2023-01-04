@@ -1,4 +1,3 @@
-import { test, expect } from "vitest"
 import { Auth } from "./Auth"
 
 test("Create an auth instance", () => {

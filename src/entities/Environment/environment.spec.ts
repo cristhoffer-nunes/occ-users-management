@@ -1,4 +1,3 @@
-import { test, expect } from "vitest"
 import { Environment } from "./Environment"
 
 test("Create an environment instance", () => {

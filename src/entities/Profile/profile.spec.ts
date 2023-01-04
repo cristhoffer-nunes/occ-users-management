@@ -1,4 +1,3 @@
-import { test, expect } from "vitest"
 import { Profile } from "./Profile"
 
 test("Create an profile instance", () => {
