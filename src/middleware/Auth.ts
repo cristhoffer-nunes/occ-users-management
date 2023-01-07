@@ -12,21 +12,25 @@ export async function AuthorizationMiddleware(
   response: Response,
   next: NextFunction
 ) {
-  const { authorization } = request.headers
+  try {
+    const { authorization } = request.headers
 
-  const token = authorization?.split(" ")[1]
+    const token = authorization?.split(" ")[1]
 
-  if (token === undefined || token === null) {
-    return response
-      .status(403)
-      .json({ message: "Request denied. Fill in a valid token." })
+    if (token === undefined || token === null) {
+      return response
+        .status(403)
+        .json({ message: "Request denied. Fill in a valid token." })
+    }
+
+    const decode = jwt.verify(token, process.env.JWT_PASS ?? "")
+
+    const { id } = decode as JSONWebToken
+
+    request.userId = id
+
+    return next()
+  } catch (err) {
+    return response.status(400).json(err)
   }
-
-  const decode = jwt.verify(token, process.env.JWT_PASS ?? "")
-
-  const { id } = decode as JSONWebToken
-
-  request.userId = id
-
-  return next()
 }
