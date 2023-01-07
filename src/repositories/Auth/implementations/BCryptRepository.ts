@@ -1,6 +1,9 @@
 import { Auth } from "../../../entities/Auth/Auth"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
+import dotenv from "dotenv"
+
+dotenv.config()
 
 export class BCryptRepository {
   async authenticate(
@@ -15,7 +18,7 @@ export class BCryptRepository {
       throw new Error("Invalid credentials")
     }
 
-    const token = jwt.sign({ id: id }, process.env.JWT_PASS ?? "", {
+    const token = jwt.sign({ id: id }, process.env.JWT_PASS, {
       expiresIn: "8h",
     })
 

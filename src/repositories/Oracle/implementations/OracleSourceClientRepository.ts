@@ -1,5 +1,5 @@
 import axios from "axios"
-import { Oracle } from "../../../entities/OracleToken"
+import { Oracle } from "../../../entities/Oracle/Oracle"
 import { IOracleRepository } from "../IOracleRepository"
 
 export class OracleSourceClientRepository implements IOracleRepository {

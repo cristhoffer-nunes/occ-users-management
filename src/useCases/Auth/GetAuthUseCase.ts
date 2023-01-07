@@ -11,7 +11,6 @@ export class GetAuthUseCase {
       data.password,
       data.hashedPassword
     )
-
     return auth
   }
 }
