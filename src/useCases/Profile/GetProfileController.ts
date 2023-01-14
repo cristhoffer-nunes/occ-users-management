@@ -53,6 +53,8 @@ export class GetProfileController {
           message: statusText,
           data: data,
         })
+      } else {
+        return response.status(500).json(err.message)
       }
     }
   }
