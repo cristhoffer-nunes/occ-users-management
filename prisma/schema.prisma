@@ -11,10 +11,13 @@ datasource db {
 }
 
 model Environment {
-  id     String @id @unique @default(cuid())
-  name   String @unique
-  url    String @unique
-  appKey String 
+  id        String @id @unique @default(cuid())
+  name      String @unique
+  url       String @unique
+  appKey    String
+  email     String
+  password  String
+  totp_code String
 }
 
 model User {
