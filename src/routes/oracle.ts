@@ -1,10 +1,18 @@
 import { Router } from "express"
-import { getSourceClientController } from "../useCases/Oracle"
+import {
+  getSourceClientController,
+  getSourceClientAdminController,
+} from "../useCases/Oracle"
 
 const routerSourceClient = Router()
+const routerSourceClientAdmin = Router()
 
 routerSourceClient.post("/oracle", (req, res) => {
   return getSourceClientController.handle(req, res)
 })
 
-export { routerSourceClient }
+routerSourceClientAdmin.post("/oracleAdmin", (req, res) => {
+  return getSourceClientAdminController.handle(req, res)
+})
+
+export { routerSourceClient, routerSourceClientAdmin }
