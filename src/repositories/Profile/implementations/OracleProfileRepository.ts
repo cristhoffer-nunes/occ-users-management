@@ -10,7 +10,7 @@ export class OracleProfilesRepository implements IProfilesRepository {
     token: Oracle
   ): Promise<Profile[]> {
     const { data } = await axios.get(
-      `${environment}/ccadmin/v1/adminProfiles?q=email eq "${email}"&fields=firstName,lastName,email,active&queryFormat=SCIM`,
+      `${environment}/ccadmin/v1/adminProfiles?q=email eq "${email}"&fields=id,firstName,lastName,email,active&queryFormat=SCIM`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -18,5 +18,23 @@ export class OracleProfilesRepository implements IProfilesRepository {
       }
     )
     return data.items
+  }
+
+  async updateProfile(
+    userId: string,
+    environment: string,
+    token: Oracle
+  ): Promise<Profile[]> {
+    const { data } = await axios.put(
+      `${environment}/ccadmin/v1/adminProfiles/${userId}?fields=id,firstName,lastName,email,active`,
+      { active: false },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+
+    return data
   }
 }

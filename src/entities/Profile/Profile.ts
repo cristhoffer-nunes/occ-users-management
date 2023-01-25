@@ -1,18 +1,22 @@
 export class Profile {
+  public id: string
   public firstName: string
   public lastName: string
-  public ative: boolean
+  public active: boolean
   public email: string
+  public link?: string
 
   constructor(
     firstName: string,
     lastName: string,
-    ative: boolean,
-    email: string
+    active: boolean,
+    email: string,
+    link?: string
   ) {
     this.firstName = firstName
     this.lastName = lastName
-    this.ative = ative
+    this.active = active
     this.email = email
+    this.link = link
   }
 }

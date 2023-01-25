@@ -7,4 +7,9 @@ export interface IProfilesRepository {
     environment: string,
     token: Oracle
   ): Promise<Profile[]>
+  updateProfile(
+    email: string,
+    environment: string,
+    token: Oracle
+  ): Promise<Profile[]>
 }
