@@ -5,6 +5,6 @@ export interface IOracleRepository {
     client: string,
     email: string,
     password: string,
-    topt_code: string
+    totp_code_code: string
   ): Promise<Oracle>
 }
