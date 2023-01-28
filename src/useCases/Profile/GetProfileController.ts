@@ -1,4 +1,5 @@
 import { Request, Response } from "express"
+import { loggerGetProfile } from "../../config/logger"
 import { GetEnvironmentUseCase } from "../Environment/GetEnvironmentsUseCase"
 import { GetSourceClientUseCase } from "../Oracle/GetSourceClientUseCase"
 import { IGetProfileDTO } from "./GetProfileDTO"
@@ -20,7 +21,6 @@ export class GetProfileController {
       const profileArray = []
 
       for (let i = 0; i < environments.length; i++) {
-        console.count()
         const token = await this.getSourceClientUseCase.execute(environments[i])
 
         const profileDTO: IGetProfileDTO = {
@@ -31,17 +31,18 @@ export class GetProfileController {
 
         const profile = await this.getProfilesUseCase.execute(profileDTO)
 
-        const profileInformation = profile[0]
+        if (profile[0]) {
+          const obj = {
+            name: environments[i].name,
+            profileInformations: profile[0],
+          }
 
-        const obj = {
-          name: environments[i].name,
-          profileInfo:
-            profileInformation != undefined
-              ? profileInformation
-              : `E-mail "${email}" not registered.`,
+          profileArray.push(obj)
+        } else if (!profile[0]) {
+          loggerGetProfile.info(
+            `E-mail ${email} not registered for the environment ${environments[i].name}`
+          )
         }
-
-        profileArray.push(obj)
       }
 
       return response.status(200).json(profileArray)
