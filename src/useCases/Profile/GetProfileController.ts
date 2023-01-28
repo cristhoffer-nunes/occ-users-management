@@ -45,6 +45,12 @@ export class GetProfileController {
         }
       }
 
+      if (profileArray.length == 0) {
+        return response.status(200).json({
+          message: `Email ${email} not registered in any environment.`,
+        })
+      }
+
       return response.status(200).json(profileArray)
     } catch (err) {
       if (err.response) {
