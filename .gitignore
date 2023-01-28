@@ -5,3 +5,4 @@ dist
 .vscode
 coverage
 rest
+logs

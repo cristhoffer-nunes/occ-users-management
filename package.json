@@ -29,6 +29,7 @@
     "short-unique-id": "^4.4.4",
     "swagger-ui-express": "^4.6.0",
     "typescript": "^4.8.4",
+    "winston": "^3.8.2",
     "zod": "^3.19.1"
   },
   "devDependencies": {
