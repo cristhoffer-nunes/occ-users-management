@@ -11,5 +11,5 @@ export interface IProfilesRepository {
     email: string,
     environment: string,
     token: Oracle
-  ): Promise<Profile[]>
+  ): Promise<Profile>
 }

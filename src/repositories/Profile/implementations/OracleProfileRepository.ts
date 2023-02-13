@@ -24,7 +24,7 @@ export class OracleProfilesRepository implements IProfilesRepository {
     userId: string,
     environment: string,
     token: Oracle
-  ): Promise<Profile[]> {
+  ): Promise<Profile> {
     const { data } = await axios.put(
       `${environment}/ccadmin/v1/adminProfiles/${userId}?fields=id,firstName,lastName,email,active`,
       { active: false },

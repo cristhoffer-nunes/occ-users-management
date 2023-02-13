@@ -33,8 +33,11 @@ export class GetProfileController {
 
         if (profile[0]) {
           const obj = {
-            name: environments[i].name,
-            profileInformations: profile[0],
+            environment: environments[i].name,
+            firstName: profile[0].firstName,
+            lastName: profile[0].lastName,
+            email: profile[0].email,
+            active: profile[0].active,
           }
 
           profileArray.push(obj)
