@@ -5,6 +5,7 @@ import { IGetProfileDTO } from "./GetProfileDTO"
 import { GetProfileUseCase } from "./GetProfileUseCase"
 import { IUpdateProfileDTO } from "./UpdateProfileDTO"
 import { UpdateProfileUseCase } from "./UpdateProfileUseCase"
+import { loggerUpdateProfile } from "../../config/logger"
 
 export class UpdateProfileController {
   constructor(
@@ -23,37 +24,49 @@ export class UpdateProfileController {
       const profileArray = []
 
       for (let i = 0; i < environments.length; i++) {
-        console.count()
-        const token = await this.getSourceClientAdminUseCase.execute(
-          environments[i]
-        )
+        const isPRD = environments[i].name.indexOf("prd") > -1
 
-        const profileDTO: IGetProfileDTO = {
-          email: email,
-          environment: environments[i].url,
-          token: token,
-        }
+        if (!isPRD) {
+          const token = await this.getSourceClientAdminUseCase.execute(
+            environments[i]
+          )
 
-        const profile = await this.getProfilesUseCase.execute(profileDTO)
-        if (profile[0] && profile[0].active == true) {
-          const profileId = profile[0].id
-
-          const updateProfileDTO: IUpdateProfileDTO = {
-            id: profileId,
+          const profileDTO: IGetProfileDTO = {
+            email: email,
             environment: environments[i].url,
             token: token,
           }
 
-          const updateProfile = await this.updateProfilesUseCase.execute(
-            updateProfileDTO
-          )
+          const profile = await this.getProfilesUseCase.execute(profileDTO)
+          if (profile[0] && profile[0].active == true) {
+            const profileId = profile[0].id
 
-          const obj = {
-            name: environments[i].name,
-            profileInformations: updateProfile,
+            const updateProfileDTO: IUpdateProfileDTO = {
+              id: profileId,
+              environment: environments[i].url,
+              token: token,
+            }
+
+            const updateProfile = await this.updateProfilesUseCase.execute(
+              updateProfileDTO
+            )
+
+            loggerUpdateProfile.info({
+              environment: environments[i].name,
+              email: email,
+              active: updateProfile.active,
+            })
+
+            const obj = {
+              environment: environments[i].name,
+              firstName: updateProfile.firstName,
+              lastName: updateProfile.lastName,
+              active: updateProfile.active,
+              email: updateProfile.email,
+            }
+
+            profileArray.push(obj)
           }
-
-          profileArray.push(obj)
         }
       }
 

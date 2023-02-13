@@ -33,8 +33,11 @@ export class GetProfileController {
 
         if (profile[0]) {
           const obj = {
-            name: environments[i].name,
-            profileInformations: profile[0],
+            environment: environments[i].name,
+            firstName: profile[0].firstName,
+            lastName: profile[0].lastName,
+            email: profile[0].email,
+            active: profile[0].active,
           }
 
           profileArray.push(obj)
@@ -43,6 +46,12 @@ export class GetProfileController {
             `E-mail ${email} not registered for the environment ${environments[i].name}`
           )
         }
+      }
+
+      if (profileArray.length == 0) {
+        return response.status(200).json({
+          message: `Email ${email} not registered in any environment.`,
+        })
       }
 
       return response.status(200).json(profileArray)
