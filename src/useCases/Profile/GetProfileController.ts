@@ -14,6 +14,7 @@ export class GetProfileController {
 
   async handle(request: Request, response: Response): Promise<Response> {
     try {
+      const { userId } = request
       const { email } = request.body
 
       const environments = await this.getEnvironmentsUseCase.execute()
@@ -42,9 +43,10 @@ export class GetProfileController {
 
           profileArray.push(obj)
         } else if (!profile[0]) {
-          loggerGetProfile.info(
-            `E-mail ${email} not registered for the environment ${environments[i].name}`
-          )
+          loggerGetProfile.info({
+            userRequest: userId,
+            message: `E-mail ${email} not registered for the environment ${environments[i].name}`,
+          })
         }
       }
 

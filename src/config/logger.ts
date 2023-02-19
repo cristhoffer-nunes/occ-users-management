@@ -16,7 +16,7 @@ export const loggerGetProfile = createLogger({
       format: format.combine(format.json()),
     }),
   ],
-  format: format.combine(format.metadata(), format.timestamp()),
+  format: format.combine(format.timestamp()),
 })
 
 export const loggerUpdateProfile = createLogger({
@@ -35,5 +35,5 @@ export const loggerUpdateProfile = createLogger({
       format: format.combine(format.json()),
     }),
   ],
-  format: format.combine(format.metadata(), format.timestamp()),
+  format: format.combine(format.timestamp()),
 })

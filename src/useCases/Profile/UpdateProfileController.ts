@@ -17,6 +17,7 @@ export class UpdateProfileController {
 
   async handle(request: Request, response: Response): Promise<Response> {
     try {
+      const { userId } = request
       const { email } = request.body
 
       const environments = await this.getEnvironmentsUseCase.execute()
@@ -52,9 +53,8 @@ export class UpdateProfileController {
             )
 
             loggerUpdateProfile.info({
-              environment: environments[i].name,
-              email: email,
-              active: updateProfile.active,
+              userRequest: userId,
+              message: `User ${email} disabled for the ${environments[i].name} environment. Current Status: ${updateProfile.active}`,
             })
 
             const obj = {
@@ -68,6 +68,12 @@ export class UpdateProfileController {
             profileArray.push(obj)
           }
         }
+      }
+
+      if (profileArray.length == 0) {
+        return response.status(200).json({
+          message: `User ${email} is not active in any environment.`,
+        })
       }
 
       return response.status(200).json(profileArray)
