@@ -4,7 +4,7 @@ import { getEnvironmentController } from "../useCases/Environment"
 
 const routerGetEnvironments = Router()
 
-routerGetEnvironments.post(
+routerGetEnvironments.get(
   "/environments",
   AuthorizationMiddleware,
   (req, res) => {
