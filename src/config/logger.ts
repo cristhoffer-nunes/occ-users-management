@@ -2,14 +2,6 @@ import { createLogger, transports, format } from "winston"
 
 export const loggerGetProfile = createLogger({
   transports: [
-    new transports.Console({
-      format: format.combine(
-        format.colorize(),
-        format.printf(({ timestamp, level, message }) => {
-          return `[${timestamp}] ${level}: ${message}.`
-        })
-      ),
-    }),
     new transports.File({
       dirname: "logs",
       filename: "getProfiles.log",
@@ -21,14 +13,6 @@ export const loggerGetProfile = createLogger({
 
 export const loggerProfileNotFound = createLogger({
   transports: [
-    new transports.Console({
-      format: format.combine(
-        format.colorize(),
-        format.printf(({ timestamp, level, message }) => {
-          return `[${timestamp}] ${level}: ${message}.`
-        })
-      ),
-    }),
     new transports.File({
       dirname: "logs",
       filename: "profileNotFound.log",
@@ -39,14 +23,6 @@ export const loggerProfileNotFound = createLogger({
 })
 export const loggerProfileIsAlreadyDisabled = createLogger({
   transports: [
-    new transports.Console({
-      format: format.combine(
-        format.colorize(),
-        format.printf(({ timestamp, level, message }) => {
-          return `[${timestamp}] ${level}: ${message}.`
-        })
-      ),
-    }),
     new transports.File({
       dirname: "logs",
       filename: "profileIsAlreadyDisabled.log",
@@ -57,14 +33,6 @@ export const loggerProfileIsAlreadyDisabled = createLogger({
 })
 export const loggerUpdateProfile = createLogger({
   transports: [
-    new transports.Console({
-      format: format.combine(
-        format.colorize(),
-        format.printf(({ timestamp, level, message }) => {
-          return `[${timestamp}] ${level}: ${message}.`
-        })
-      ),
-    }),
     new transports.File({
       dirname: "logs",
       filename: "updateProfiles.log",
