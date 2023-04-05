@@ -5,7 +5,11 @@ import { IGetProfileDTO } from "./GetProfileDTO"
 import { GetProfileUseCase } from "./GetProfileUseCase"
 import { IUpdateProfileDTO } from "./UpdateProfileDTO"
 import { UpdateProfileUseCase } from "./UpdateProfileUseCase"
-import { loggerUpdateProfile } from "../../config/logger"
+import {
+  loggerUpdateProfile,
+  loggerProfileNotFound,
+  loggerProfileIsAlreadyDisabled,
+} from "../../config/logger"
 
 export class UpdateProfileController {
   constructor(
@@ -22,7 +26,9 @@ export class UpdateProfileController {
 
       const environments = await this.getEnvironmentsUseCase.execute()
 
-      const profileArray = []
+      const profileDisabled = []
+      const profileIsAlreadyDisabled = []
+      const profileNotFound = []
 
       for (let i = 0; i < environments.length; i++) {
         const isPRD = environments[i].name.indexOf("prd") > -1
@@ -39,6 +45,31 @@ export class UpdateProfileController {
           }
 
           const profile = await this.getProfilesUseCase.execute(profileDTO)
+
+          if (profile[0] && profile[0].active == false) {
+            const obj = {
+              timestamp: new Date(),
+              environment: environments[i].name,
+              firstName: profile[0].firstName,
+              lastName: profile[0].lastName,
+              active: profile[0].active,
+              email: profile[0].email,
+              message: `Profile ${email} is already disabled`,
+            }
+
+            loggerProfileIsAlreadyDisabled.info({
+              userRequest: userId,
+              environment: environments[i].name,
+              firstName: profile[0].firstName,
+              lastName: profile[0].lastName,
+              active: profile[0].active,
+              email: profile[0].email,
+              message: `Profile ${email} is already disabled`,
+            })
+
+            profileIsAlreadyDisabled.push(obj)
+          }
+
           if (profile[0] && profile[0].active == true) {
             const profileId = profile[0].id
 
@@ -54,29 +85,48 @@ export class UpdateProfileController {
 
             loggerUpdateProfile.info({
               userRequest: userId,
-              message: `User ${email} disabled for the ${environments[i].name} environment. Current Status: ${updateProfile.active}`,
-            })
-
-            const obj = {
               environment: environments[i].name,
               firstName: updateProfile.firstName,
               lastName: updateProfile.lastName,
               active: updateProfile.active,
               email: updateProfile.email,
+              message: `Profile ${email} disabled`,
+            })
+
+            const obj = {
+              timestamp: new Date(),
+              environment: environments[i].name,
+              firstName: updateProfile.firstName,
+              lastName: updateProfile.lastName,
+              active: updateProfile.active,
+              email: updateProfile.email,
+              message: `Profile ${email} disabled`,
             }
 
-            profileArray.push(obj)
+            profileDisabled.push(obj)
+          }
+
+          if (!profile[0]) {
+            const obj = {
+              timestamp: new Date(),
+              environment: environments[i].name,
+              message: `Profile ${email} not found`,
+            }
+
+            loggerProfileNotFound.info({
+              userRequest: userId,
+              environment: environments[i].name,
+              message: `Profile ${email} not found`,
+            })
+
+            profileNotFound.push(obj)
           }
         }
       }
 
-      if (profileArray.length == 0) {
-        return response.status(200).json({
-          message: `User ${email} is not active in any environment.`,
-        })
-      }
-
-      return response.status(200).json(profileArray)
+      return response
+        .status(200)
+        .json({ profileIsAlreadyDisabled, profileDisabled, profileNotFound })
     } catch (err) {
       if (err.response) {
         const { status, statusText, data } = err.response
