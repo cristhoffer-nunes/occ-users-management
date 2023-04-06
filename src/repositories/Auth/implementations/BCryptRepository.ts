@@ -9,6 +9,7 @@ export class BCryptRepository {
   async authenticate(
     id: string,
     email: string,
+    roles: string,
     password: string,
     hashedPassword: string
   ): Promise<Auth> {
@@ -18,9 +19,13 @@ export class BCryptRepository {
       throw new Error("Invalid credentials")
     }
 
-    const token = jwt.sign({ id: id }, process.env.JWT_PASS, {
-      expiresIn: "8h",
-    })
+    const token = jwt.sign(
+      { id: id, email: email, roles: roles },
+      process.env.JWT_PASS,
+      {
+        expiresIn: "8h",
+      }
+    )
 
     const authObject: Auth = {
       user: {

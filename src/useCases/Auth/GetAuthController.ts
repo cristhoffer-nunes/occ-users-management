@@ -21,6 +21,7 @@ export class GetAuthController {
       const authDTO: IGetAuthDTO = {
         id: getUser.id,
         email: getUser.email,
+        roles: getUser.roles,
         password: data.password,
         hashedPassword: getUser.hashedPassword,
       }

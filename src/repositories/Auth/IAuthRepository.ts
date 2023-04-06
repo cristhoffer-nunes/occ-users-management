@@ -5,6 +5,7 @@ export interface IAuthRepository {
     id: string,
     email: string,
     password: string,
+    roles: string,
     hashedPassword: string
   ): Promise<Auth>
 }

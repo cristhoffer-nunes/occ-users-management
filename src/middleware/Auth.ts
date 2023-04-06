@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken"
 
 interface JSONWebToken {
   id: string
+  roles: string
   iat: number
   exp: number
 }
@@ -25,9 +26,10 @@ export async function AuthorizationMiddleware(
 
     const decode = jwt.verify(token, process.env.JWT_PASS ?? "")
 
-    const { id } = decode as JSONWebToken
+    const { id, roles } = decode as JSONWebToken
 
     request.userId = id
+    request.roles = roles
 
     return next()
   } catch (err) {

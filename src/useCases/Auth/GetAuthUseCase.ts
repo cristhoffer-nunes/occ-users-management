@@ -8,6 +8,7 @@ export class GetAuthUseCase {
     const auth = await this.authRepository.authenticate(
       data.id,
       data.email,
+      data.roles,
       data.password,
       data.hashedPassword
     )
