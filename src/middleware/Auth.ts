@@ -1,19 +1,38 @@
 import { Request, Response, NextFunction } from "express"
+import jwt from "jsonwebtoken"
 
-export async function VerifyRolesMiddleware(
+interface JSONWebToken {
+  id: string
+  roles: string
+  iat: number
+  exp: number
+}
+
+export async function AuthorizationMiddleware(
   request: Request,
   response: Response,
   next: NextFunction
 ) {
-  const { roles } = request
+  try {
+    const { authorization } = request.headers
 
-  switch (roles) {
-    case "admin":
-      next()
-      break
-    case "reading":
-      return response.status(403).json({
-        message: "User does not have the necessary permissions.",
-      })
+    const token = authorization?.split(" ")[1]
+
+    if (token === undefined || token === null) {
+      return response
+        .status(403)
+        .json({ message: "Request denied. Fill in a valid token." })
+    }
+
+    const decode = jwt.verify(token, process.env.JWT_PASS ?? "")
+
+    const { id, roles } = decode as JSONWebToken
+
+    request.userId = id
+    request.roles = roles
+
+    return next()
+  } catch (err) {
+    return response.status(400).json(err)
   }
 }
