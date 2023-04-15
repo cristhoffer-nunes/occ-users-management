@@ -1,8 +1,8 @@
 import "reflect-metadata"
-import "./shared/container"
+import "../../container"
 
 import express from "express"
-import { router } from "routes"
+import { router } from "@shared/infra/http/routes"
 
 const app = express()
 

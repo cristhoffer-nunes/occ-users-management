@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client"
-import { User } from "../../infra/entities/User"
-import { IUsersRepository } from "../IUsersRepository"
+import { User } from "../../entities/User"
+import { IUsersRepository } from "../../../repositories/IUsersRepository"
 import { ICreateUserDTO } from "@modules/users/dtos/ICreateUserDTO"
 
 export class UsersRepository implements IUsersRepository {

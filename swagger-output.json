@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "User Management API",
+    "title": "User Management",
     "description": "API responsible for informing whether a user exists/doesn't exist and whether it is active/inactive according to the selected environment.",
     "version": "1.0.0",
     "contact": {
