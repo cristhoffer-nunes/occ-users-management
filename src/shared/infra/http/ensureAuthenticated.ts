@@ -7,7 +7,7 @@ interface IPayload {
   sub: string
 }
 
-export async function ensureAuthenticated(
+async function ensureAuthenticated(
   request: Request,
   response: Response,
   next: NextFunction
@@ -42,3 +42,5 @@ export async function ensureAuthenticated(
     return response.status(500).json(err)
   }
 }
+
+export { ensureAuthenticated }

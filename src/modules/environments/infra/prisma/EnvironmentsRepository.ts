@@ -2,6 +2,7 @@ import { ICreateEnvironmentDTO } from "@modules/environments/dtos/ICreateEnviron
 import { IEnvironmentRepository } from "@modules/environments/repositories/IEnvironmentsRepository"
 import { Environment } from "../entitities/Environment"
 import { PrismaClient } from "@prisma/client"
+import { AppError } from "@shared/errors/AppErrors"
 
 export class EnvironmentsRepository implements IEnvironmentRepository {
   private prisma = new PrismaClient()
@@ -40,5 +41,23 @@ export class EnvironmentsRepository implements IEnvironmentRepository {
     const environment = await this.prisma.environment.findMany()
 
     return environment
+  }
+
+  async deleteByName(name: string): Promise<void> {
+    const environment = await this.prisma.environment.findUnique({
+      where: {
+        name: name,
+      },
+    })
+
+    if (!environment) {
+      throw new AppError("Envrionment does not exist")
+    }
+
+    await this.prisma.environment.delete({
+      where: {
+        name: name,
+      },
+    })
   }
 }
