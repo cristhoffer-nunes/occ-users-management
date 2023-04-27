@@ -34,7 +34,10 @@ export class ListProfileUseCase {
         token: token,
       })
 
-      profileArray.push(profile)
+      if (profile) {
+        profile.environment = environments[i].name
+        profileArray.push(profile)
+      }
     }
 
     return profileArray

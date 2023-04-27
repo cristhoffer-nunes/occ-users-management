@@ -9,11 +9,17 @@ A Nodejs application with Typescript responsible for performing internal OCC use
 
 - `Authentication`: Authentication system to access the application and make requests to the endpoints using JWT.
 
+- `Create user`: Create user with application access.
+
 - `Environment Search`: Search for all environments registered in the database.
 
-- `User Search`: Query whether the user is registered in the OCC environments
+- `Creating an Environment`: Register an environment in the database.
 
-- `User Update`: Deactivate the active user in lower-level OCC environments
+- `Delete an Environment`: Delete an environment in the database.
+
+- `Profile Search`: Query whether the user is registered in the OCC environments
+
+- `Profile Update`: Deactivate the active user in lower-level OCC environments
 
 ## Accessing the project:
 
@@ -49,7 +55,7 @@ $ npm run start
 
 ## Endpoints:
 
-- `Authentication` : POST /authenticate
+- `Authentication` : POST /sessions
 
 ```bash
 {
@@ -58,11 +64,26 @@ $ npm run start
 }
 ```
 
-- `Environment Search` : GET /environments
+- `Environment Search` : GET /environments/list
 
 Authorization: Bearer _token generated from authentication_
 
-- `User Search`: POST /profiles
+- `Creating an Environment` : POST /environments/create
+
+Authorization: Bearer _token generated from authentication_
+
+```bash
+{
+  "name": "example-prd",
+  "url": "https://example.com",
+  "appKey": "your_appKey",
+  "email": "your_email@mail.com",
+  "password": "your_password",
+  "totp_code": "12345PRD"
+}
+```
+
+- `Profile Search`: POST /profiles
 
 Authorization: Bearer _token generated from authentication_
 
@@ -72,7 +93,7 @@ Authorization: Bearer _token generated from authentication_
 }
 ```
 
-- `User Update`: PUT /profiles
+- `Profile Update`: PUT /profiles
 
 Authorization: Bearer _token generated from authentication_
 

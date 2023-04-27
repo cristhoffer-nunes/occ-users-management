@@ -9,8 +9,8 @@ const listEnvironmentsController = new ListEnvironmentsController()
 const deleteEnvironmentByNameController =
   new DeleteEnvironmentByNameController()
 
-environmentsRoutes.post("/", createEnvironmentController.handle)
-environmentsRoutes.get("/", listEnvironmentsController.handle)
-environmentsRoutes.delete("/", deleteEnvironmentByNameController.handle)
+environmentsRoutes.post("/create", createEnvironmentController.handle)
+environmentsRoutes.get("/list", listEnvironmentsController.handle)
+environmentsRoutes.delete("/delete", deleteEnvironmentByNameController.handle)
 
 export { environmentsRoutes }

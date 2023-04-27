@@ -13,6 +13,12 @@ export class ListProfileController {
 
       const profiles = await listProfileUseCase.execute({ email })
 
+      if (!profiles.length) {
+        return response.json({
+          message: "Profile not registered in any environment.",
+        })
+      }
+
       return response.json(profiles)
     } catch (err) {
       if (err instanceof AppError) {
