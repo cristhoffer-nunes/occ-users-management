@@ -7,6 +7,7 @@ import { IMfaLoginDTO } from "@modules/oracle/dtos/IMfaLoginDTO"
 import { IProfilesRepository } from "@modules/oracle/repositories/IProfilesRepository"
 import { Profile } from "../entities/Profile"
 import { IUpdateProfileDTO } from "@modules/oracle/dtos/IUpdateProfileDTO"
+import { IRequestPasswordResetDTO } from "@modules/oracle/dtos/IRequestPasswordResetDTO"
 
 export class ProfilesRepository implements IProfilesRepository {
   async login({ url, appKey }: ILoginDTO): Promise<string> {
@@ -24,6 +25,27 @@ export class ProfilesRepository implements IProfilesRepository {
     if (token.status === 200) {
       return token.data.access_token
     }
+  }
+
+  async requestPasswordReset({
+    url,
+    email,
+    token,
+  }: IRequestPasswordResetDTO): Promise<boolean> {
+    const { data } = await axios.post(
+      `${url}/ccadmin/v1/adminProfiles/requestPasswordReset`,
+      {
+        email: email,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+
+    return data.success
   }
   async mfaLogin({
     url,
