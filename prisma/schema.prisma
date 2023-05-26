@@ -21,7 +21,8 @@ model Environment {
 }
 
 model User {
-  id             String @id @unique @default(cuid())
-  email          String @unique
-  hashedPassword String
+  id       String  @id @unique @default(cuid())
+  email    String  @unique
+  password String
+  roles    String?
 }

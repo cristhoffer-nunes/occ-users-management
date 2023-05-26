@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "User Management API",
+    "title": "User Management",
     "description": "API responsible for informing whether a user exists/doesn't exist and whether it is active/inactive according to the selected environment.",
     "version": "1.0.0",
     "contact": {
@@ -12,8 +12,8 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "localhost:3333",
-  "basePath": "/v1/api",
+  "host": "localhost:3000",
+  "basePath": "/",
   "securityDefinitions": {
     "Bearer": {
       "type": "apiKey",
@@ -24,22 +24,22 @@
   },
   "tags": [
     {
-      "name": "auth",
-      "description": "Creating access and logging in"
+      "name": "users",
+      "description": "Authenticate and create access for a user"
     },
     {
-      "name": "user",
-      "description": "Query users according to the selected environment"
+      "name": "environments",
+      "description": "List, register and delete environments"
     },
     {
-      "name": "environment",
-      "description": "Creating an Environment and Environment Query"
+      "name": "oracle",
+      "description": "Search and deactivate profiles"
     }
   ],
   "paths": {
-    "/auth": {
+    "/sessions": {
       "post": {
-        "tags": ["auth"],
+        "tags": ["users"],
         "summary": "Authenticate",
         "description": "Authentication object is required to generate the authentication token.",
         "parameters": [
@@ -52,8 +52,8 @@
           }
         ],
         "responses": {
-          "401": {
-            "description": "Invalid e-mail address or password."
+          "400": {
+            "description": "E-mail or password incorrect!"
           },
           "500": {
             "description": "Internal server error."
@@ -64,39 +64,164 @@
         }
       }
     },
-    "/user": {
+    "/users/create": {
       "post": {
-        "tags": ["user"],
-        "summary": "Get profile",
-        "description": "Check if a user exists in the environment and if he is active or inactive.",
+        "tags": ["users"],
+        "summary": "Create user",
+        "description": "Create an application access user",
         "security": [{ "Bearer": [] }],
         "parameters": [
           {
-            "name": "userObject",
+            "name": "createAuthObject",
             "in": "body",
             "schema": {
-              "$ref": "#components/schemas/User"
+              "$ref": "#components/schemas/CreateAuth"
             }
           }
         ],
         "responses": {
           "400": {
-            "description": "Oops! Invalid field. Check your body."
+            "description": "E-mail or password incorrect!"
           },
           "401": {
-            "description": "Invalid e-mail address or password."
-          },
-          "403": {
-            "description": "Request denied."
-          },
-          "404": {
-            "description": "Profile not found!"
+            "description": "Unauthorized"
           },
           "500": {
             "description": "Internal server error."
           },
           "200": {
             "description": "Ok"
+          }
+        }
+      }
+    },
+    "/environments/list": {
+      "get": {
+        "tags": ["environments"],
+        "summary": "List all environments",
+        "description": "List all environments registered from database",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error."
+          },
+          "200": {
+            "description": "Ok"
+          }
+        }
+      }
+    },
+    "/environments/create": {
+      "post": {
+        "tags": ["environments"],
+        "summary": "Create environment",
+        "description": "Create environment",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "createEnvironmentObject",
+            "in": "body",
+            "schema": {
+              "$ref": "#components/schemas/CreateEnvironment"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error."
+          },
+          "200": {
+            "description": "Ok"
+          }
+        }
+      }
+    },
+    "/environments/delete": {
+      "delete": {
+        "tags": ["environments"],
+        "summary": "Delete environment",
+        "description": "Delete environment by name",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "deleteEnvironmentObject",
+            "in": "body",
+            "schema": {
+              "$ref": "#components/schemas/DeleteEnvironment"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error."
+          },
+          "200": {
+            "description": "Ok"
+          }
+        }
+      }
+    },
+    "/profiles/list": {
+      "post": {
+        "tags": ["oracle"],
+        "summary": "Get profile",
+        "description": "Check if a profile exists in the environment and if he is active or inactive.",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "userObject",
+            "in": "body",
+            "schema": {
+              "$ref": "#components/schemas/Profile"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/profiles/update": {
+      "put": {
+        "tags": ["oracle"],
+        "summary": "Update profile",
+        "description": "Disable access to a JBQ user in the lower environments that is registered and active",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "name": "userObject",
+            "in": "body",
+            "schema": {
+              "$ref": "#components/schemas/Profile"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error."
           }
         }
       }
@@ -117,12 +242,62 @@
           }
         }
       },
-      "User": {
+      "CreateAuth": {
         "type": "object",
         "properties": {
           "email": {
             "type": "string",
-            "example": "user_email@mail.com"
+            "example": "your_email@mail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "your_password"
+          },
+          "roles": {
+            "type": "string",
+            "example": "your_role"
+          }
+        }
+      },
+      "CreateEnvironment": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "test-prd"
+          },
+          "url": {
+            "type": "string",
+            "example": "https://environment_id-admin.occa.ocs.oraclecloud.com"
+          },
+          "appKey": {
+            "type": "string",
+            "example": "your_appKey"
+          },
+          "password": {
+            "type": "string",
+            "example": "your_password"
+          },
+          "totp_code": {
+            "type": "string",
+            "example": "12345PRD"
+          }
+        }
+      },
+      "DeleteEnvironment": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "test-prd"
+          }
+        }
+      },
+      "Profile": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "any_email@jbq.com"
           }
         }
       }
