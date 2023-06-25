@@ -8,6 +8,7 @@ import { IProfilesRepository } from "@modules/oracle/repositories/IProfilesRepos
 import { Profile } from "../entities/Profile"
 import { IUpdateProfileDTO } from "@modules/oracle/dtos/IUpdateProfileDTO"
 import { IRequestPasswordResetDTO } from "@modules/oracle/dtos/IRequestPasswordResetDTO"
+import { ICreateProfileDTO } from "@modules/oracle/dtos/ICreateProfileDTO"
 
 export class ProfilesRepository implements IProfilesRepository {
   async login({ url, appKey }: ILoginDTO): Promise<string> {
@@ -81,6 +82,26 @@ export class ProfilesRepository implements IProfilesRepository {
     )
 
     return data.items[0]
+  }
+
+  async createProfile({
+    url,
+    token,
+    firstName,
+    lastName,
+    email,
+    roles,
+  }: ICreateProfileDTO): Promise<Profile> {
+    const { data } = await axios.post(
+      `${url}/ccadmin/v1/adminProfiles`,
+      { firstName, lastName, email, roles },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+    return data
   }
 
   async update({ url, user_id, token }: IUpdateProfileDTO): Promise<Profile> {
