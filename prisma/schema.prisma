@@ -20,6 +20,7 @@ model Environment {
   email       String
   password    String
   totp_code   String?
+  secretKey   String?
 }
 
 model User {
