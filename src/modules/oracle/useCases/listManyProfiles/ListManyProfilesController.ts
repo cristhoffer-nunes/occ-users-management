@@ -1,17 +1,17 @@
 import { Request, Response } from "express"
 import { container } from "tsyringe"
-import { ListProfileUseCase } from "./ListProfileUseCase"
+import { ListManyProfilesUseCase } from "./ListManyProfilesUseCase"
 import { AppError } from "@shared/errors/AppErrors"
 import { AxiosError } from "axios"
 
-export class ListProfileController {
+export class ListManyProfilesController {
   async handle(request: Request, response: Response): Promise<Response> {
     try {
       const { email } = request.body
 
-      const listProfileUseCase = container.resolve(ListProfileUseCase)
+      const listManyProfilesUseCase = container.resolve(ListManyProfilesUseCase)
 
-      const profiles = await listProfileUseCase.execute({ email })
+      const profiles = await listManyProfilesUseCase.execute({ email })
 
       if (!profiles.length) {
         return response.json({

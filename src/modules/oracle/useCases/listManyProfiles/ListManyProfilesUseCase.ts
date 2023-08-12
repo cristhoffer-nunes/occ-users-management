@@ -8,7 +8,7 @@ interface IRequest {
 }
 
 @injectable()
-export class ListProfileUseCase {
+export class ListManyProfilesUseCase {
   constructor(
     @inject("ProfilesRepository")
     private profilesRepository: ProfilesRepository,
