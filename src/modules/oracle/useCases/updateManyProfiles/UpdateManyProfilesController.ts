@@ -1,15 +1,15 @@
 import { Request, Response } from "express"
 import { container } from "tsyringe"
-import { UpdateProfileUseCase } from "./UpdateProfileUseCase"
+import { UpdateManyProfilesUseCase } from "./UpdateManyProfilesUseCase"
 import { AppError } from "@shared/errors/AppErrors"
 import { AxiosError } from "axios"
 
-export class UpdateProfileController {
+export class UpdateManyProfilesController {
   async handle(request: Request, response: Response): Promise<Response> {
     try {
       const { email } = request.body
 
-      const updateProfileUseCase = container.resolve(UpdateProfileUseCase)
+      const updateProfileUseCase = container.resolve(UpdateManyProfilesUseCase)
 
       const updateProfile = await updateProfileUseCase.execute({ email })
 

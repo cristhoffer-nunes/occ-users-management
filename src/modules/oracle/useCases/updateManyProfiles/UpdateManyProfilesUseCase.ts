@@ -9,7 +9,7 @@ interface IRequest {
 }
 
 @injectable()
-export class UpdateProfileUseCase {
+export class UpdateManyProfilesUseCase {
   constructor(
     @inject("ProfilesRepository")
     private profilesRepository: ProfilesRepository,
@@ -29,9 +29,10 @@ export class UpdateProfileUseCase {
     const environments = await this.environmentsRepository.list()
 
     for (let i = 0; i < environments.length; i++) {
-      const isPrd = environments[i].name.indexOf("prd") > -1
+      const isPrd = environments[i].environment === "PRD"
+      const adminActive = environments[i].active === "A"
 
-      if (!isPrd) {
+      if (!isPrd && adminActive) {
         const token = await this.profilesRepository.mfaLogin({
           url: environments[i].url,
           email: environments[i].email,
@@ -54,6 +55,7 @@ export class UpdateProfileUseCase {
 
           const profileUpdated: Profile = {
             id: updateProfile.id,
+            environment: environments[i].name,
             firstName: updateProfile.firstName,
             lastName: updateProfile.lastName,
             email: updateProfile.email,
