@@ -1,4 +1,5 @@
 import { ICreateProfileDTO } from "../dtos/ICreateProfileDTO"
+import { IDisableDTO } from "../dtos/IDisableProfileDTO"
 import { IFindByEmailDTO } from "../dtos/IFindByEmailDTO"
 import { ILoginDTO } from "../dtos/ILoginDTO"
 import { IMfaLoginDTO } from "../dtos/IMfaLoginDTO"
@@ -15,6 +16,8 @@ export interface IProfilesRepository {
     token,
   }: IRequestPasswordResetDTO): Promise<boolean>
   findByEmail({ url, email, token }: IFindByEmailDTO): Promise<Profile>
+  findAll({ url, token }: IFindByEmailDTO): Promise<Profile[]>
+  disable({ url, user_id, token }: IDisableDTO): Promise<Profile>
   createProfile({
     url,
     token,

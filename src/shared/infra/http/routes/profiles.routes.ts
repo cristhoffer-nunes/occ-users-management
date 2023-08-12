@@ -1,17 +1,27 @@
 import { CreateProfileController } from "@modules/oracle/useCases/createProfile/CreateProfileController"
 import { ListManyProfilesController } from "@modules/oracle/useCases/listManyProfiles/ListManyProfilesController"
+import { ListProfileByEmailController } from "@modules/oracle/useCases/listProfileByEmail/ListProfileByEmailController"
 import { RequestPasswordResetController } from "@modules/oracle/useCases/requestPasswordReset/RequestPasswordResetController"
-import { UpdateManyProfilesController } from "@modules/oracle/useCases/updateManyProfiles/UpdateManyProfilesController"
+import { DisableProfileByManyEnvironmentsController } from "@modules/oracle/useCases/disableProfileByManyEnvironments/DisableProfileByManyEnvironmentsController"
+import { UpdateProfileController } from "@modules/oracle/useCases/updateProfile/UpdateProfileController"
 import { Router } from "express"
 
 const profilesRoutes = Router()
 const listManyProfilesController = new ListManyProfilesController()
-const updateManyProfilesController = new UpdateManyProfilesController()
+const listProfileByEmailController = new ListProfileByEmailController()
+const disableProfileByManyEnvironmentsController =
+  new DisableProfileByManyEnvironmentsController()
+const updateProfileController = new UpdateProfileController()
 const requestPasswordResetController = new RequestPasswordResetController()
 const createProfileController = new CreateProfileController()
 
 profilesRoutes.post("/list", listManyProfilesController.handle)
-profilesRoutes.put("/update", updateManyProfilesController.handle)
+profilesRoutes.post("/listByEmail", listProfileByEmailController.handle)
+profilesRoutes.put(
+  "/disableByEnvironments",
+  disableProfileByManyEnvironmentsController.handle
+)
+profilesRoutes.put("/update", updateProfileController.handle)
 profilesRoutes.post(
   "/requestPasswordReset",
   requestPasswordResetController.handle

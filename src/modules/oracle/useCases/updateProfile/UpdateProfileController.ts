@@ -1,17 +1,22 @@
 import { Request, Response } from "express"
 import { container } from "tsyringe"
-import { UpdateManyProfilesUseCase } from "./UpdateManyProfilesUseCase"
+import { UpdateProfileUseCase } from "./UpdateProfileUseCase"
 import { AppError } from "@shared/errors/AppErrors"
 import { AxiosError } from "axios"
 
-export class UpdateManyProfilesController {
+export class UpdateProfileController {
   async handle(request: Request, response: Response): Promise<Response> {
     try {
-      const { email } = request.body
+      const { email, environmentName, active, roles } = request.body
 
-      const updateProfileUseCase = container.resolve(UpdateManyProfilesUseCase)
+      const updateProfileUseCase = container.resolve(UpdateProfileUseCase)
 
-      const updateProfile = await updateProfileUseCase.execute({ email })
+      const updateProfile = await updateProfileUseCase.execute({
+        email,
+        environmentName,
+        active,
+        roles,
+      })
 
       return response.json(updateProfile)
     } catch (err) {
@@ -20,10 +25,11 @@ export class UpdateManyProfilesController {
           message: err.message,
         })
       } else if (err instanceof AxiosError) {
-        const { status, statusText, config } = err.response
+        const { status, statusText, config, data } = err.response
         return response.status(status).json({
           statusCode: status,
           message: statusText,
+          data: data,
           url: config.url,
         })
       }

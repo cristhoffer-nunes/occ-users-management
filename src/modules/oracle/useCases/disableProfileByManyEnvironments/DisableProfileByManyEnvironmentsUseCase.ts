@@ -2,6 +2,7 @@ import { EnvironmentsRepository } from "@modules/environments/infra/prisma/Envir
 import { ProfilesRepository } from "@modules/oracle/infra/axios/ProfilesRepository"
 import { Profile } from "@modules/oracle/infra/entities/Profile"
 import { AppError } from "@shared/errors/AppErrors"
+import { TOTPGenerator } from "@shared/utils/TOTPGenerator"
 import { inject, injectable } from "tsyringe"
 
 interface IRequest {
@@ -9,7 +10,7 @@ interface IRequest {
 }
 
 @injectable()
-export class UpdateManyProfilesUseCase {
+export class DisableProfileByManyEnvironmentsUseCase {
   constructor(
     @inject("ProfilesRepository")
     private profilesRepository: ProfilesRepository,
@@ -29,10 +30,10 @@ export class UpdateManyProfilesUseCase {
     const environments = await this.environmentsRepository.list()
 
     for (let i = 0; i < environments.length; i++) {
-      const isPrd = environments[i].environment === "PRD"
+      const isPRD = environments[i].environment === "PRD"
       const adminActive = environments[i].active === "A"
 
-      if (!isPrd && adminActive) {
+      if (!isPRD && adminActive) {
         const token = await this.profilesRepository.mfaLogin({
           url: environments[i].url,
           email: environments[i].email,
@@ -47,7 +48,7 @@ export class UpdateManyProfilesUseCase {
         })
 
         if (profile != undefined && profile.active) {
-          const updateProfile = await this.profilesRepository.update({
+          const updateProfile = await this.profilesRepository.disable({
             user_id: profile.id,
             url: environments[i].url,
             token: token,
@@ -60,6 +61,42 @@ export class UpdateManyProfilesUseCase {
             lastName: updateProfile.lastName,
             email: updateProfile.email,
             active: updateProfile.active,
+            roles: updateProfile.roles,
+          }
+
+          profileArray.push(profileUpdated)
+        }
+      } else if (isPRD && adminActive) {
+        const totpCode = TOTPGenerator(environments[i].secretKey)
+
+        const token = await this.profilesRepository.mfaLogin({
+          url: environments[i].url,
+          email: environments[i].email,
+          password: environments[i].password,
+          totp_code: totpCode,
+        })
+
+        const profile = await this.profilesRepository.findByEmail({
+          email: email,
+          url: environments[i].url,
+          token: token,
+        })
+
+        if (profile != undefined && profile.active) {
+          const updateProfile = await this.profilesRepository.disable({
+            user_id: profile.id,
+            url: environments[i].url,
+            token: token,
+          })
+
+          const profileUpdated: Profile = {
+            id: updateProfile.id,
+            environment: environments[i].name,
+            firstName: updateProfile.firstName,
+            lastName: updateProfile.lastName,
+            email: updateProfile.email,
+            active: updateProfile.active,
+            roles: updateProfile.roles,
           }
 
           profileArray.push(profileUpdated)
