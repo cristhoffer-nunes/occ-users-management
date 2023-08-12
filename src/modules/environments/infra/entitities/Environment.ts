@@ -8,4 +8,5 @@ export class Environment {
   email: string
   password: string
   totp_code?: string
+  secretKey?: string
 }
