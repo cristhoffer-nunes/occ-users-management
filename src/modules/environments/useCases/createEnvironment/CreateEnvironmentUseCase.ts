@@ -11,6 +11,8 @@ export class CreateEnvironmentUseCase {
   ) {}
 
   async execute({
+    active,
+    environment,
     name,
     email,
     appKey,
@@ -26,6 +28,8 @@ export class CreateEnvironmentUseCase {
     }
 
     await this.environmentsRepository.create({
+      active,
+      environment,
       name,
       email,
       appKey,

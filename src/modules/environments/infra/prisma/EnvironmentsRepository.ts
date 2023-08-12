@@ -4,6 +4,7 @@ import { Environment } from "../entitities/Environment"
 import { PrismaClient } from "@prisma/client"
 import { AppError } from "@shared/errors/AppErrors"
 import { IUpdateManyEnvironmentsDTO } from "@modules/environments/dtos/IUpdateManyEnvironmentsDTO"
+import ShortUniqueId from "short-unique-id"
 
 export class EnvironmentsRepository implements IEnvironmentRepository {
   private prisma = new PrismaClient()
@@ -41,6 +42,8 @@ export class EnvironmentsRepository implements IEnvironmentRepository {
   }
 
   async create({
+    active,
+    environment,
     appKey,
     email,
     name,
@@ -48,8 +51,15 @@ export class EnvironmentsRepository implements IEnvironmentRepository {
     url,
     totp_code,
   }: ICreateEnvironmentDTO): Promise<void> {
+    const generate = new ShortUniqueId({ length: 6 })
+    const code = String(generate()).toUpperCase()
+    const id = String(code)
+
     await this.prisma.environment.create({
       data: {
+        id,
+        active,
+        environment,
         appKey,
         name,
         email,
