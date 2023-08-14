@@ -2,10 +2,14 @@ import { EnvironmentsRepository } from "@modules/environments/infra/prisma/Envir
 import { ProfilesRepository } from "@modules/oracle/infra/axios/ProfilesRepository"
 import { Profile } from "@modules/oracle/infra/entities/Profile"
 import { AppError } from "@shared/errors/AppErrors"
+import { TOTPGenerator } from "@shared/utils/TOTPGenerator"
 import { inject, injectable } from "tsyringe"
 
 interface IRequest {
   email: string
+  environmentName: string
+  active: boolean
+  roles: [string]
 }
 
 @injectable()
@@ -18,7 +22,7 @@ export class UpdateProfileUseCase {
     private environmentsRepository: EnvironmentsRepository
   ) {}
 
-  async execute({ email }: IRequest) {
+  async execute({ email, environmentName, active, roles }: IRequest) {
     const profileArray: Profile[] = []
     const isJbq = email.indexOf("jbq") > -1
 
@@ -26,51 +30,95 @@ export class UpdateProfileUseCase {
       throw new AppError("The email reported does not belong to JBQ.")
     }
 
-    const environments = await this.environmentsRepository.list()
+    const environments = await this.environmentsRepository.findByName(
+      environmentName
+    )
+    const isPRD = environments.environment === "PRD"
+    const adminActive = environments.active === "A"
 
-    for (let i = 0; i < environments.length; i++) {
-      const isPrd = environments[i].name.indexOf("prd") > -1
+    if (isPRD && adminActive) {
+      const totpCode = TOTPGenerator(environments.secretKey)
+      const token = await this.profilesRepository.mfaLogin({
+        url: environments.url,
+        email: environments.email,
+        password: environments.password,
+        totp_code: totpCode,
+      })
 
-      if (!isPrd) {
-        const token = await this.profilesRepository.mfaLogin({
-          url: environments[i].url,
-          email: environments[i].email,
-          password: environments[i].password,
-          totp_code: environments[i].totp_code,
-        })
+      const profile = await this.profilesRepository.findByEmail({
+        email: email,
+        url: environments.url,
+        token: token,
+      })
 
-        const profile = await this.profilesRepository.findByEmail({
-          email: email,
-          url: environments[i].url,
+      profile.roles = profile.roles.map((item) => item.repositoryId)
+
+      const isActive = active !== undefined ? active : profile.active
+      const hasRoles = roles !== undefined ? roles : profile.roles
+
+      if (profile != undefined) {
+        const updateProfile = await this.profilesRepository.update({
+          user_id: profile.id,
+          url: environments.url,
           token: token,
+          active: isActive,
+          roles: hasRoles,
         })
 
-        if (profile != undefined && profile.active) {
-          const updateProfile = await this.profilesRepository.update({
-            user_id: profile.id,
-            url: environments[i].url,
-            token: token,
-          })
-
-          const profileUpdated: Profile = {
-            id: updateProfile.id,
-            firstName: updateProfile.firstName,
-            lastName: updateProfile.lastName,
-            email: updateProfile.email,
-            active: updateProfile.active,
-          }
-
-          profileArray.push(profileUpdated)
+        const profileUpdated: Profile = {
+          id: updateProfile.id,
+          environment: environments.name,
+          firstName: updateProfile.firstName,
+          lastName: updateProfile.lastName,
+          email: updateProfile.email,
+          active: updateProfile.active,
+          roles: updateProfile.roles,
         }
+
+        profileArray.push(profileUpdated)
+      }
+    } else if (!isPRD && adminActive) {
+      const token = await this.profilesRepository.mfaLogin({
+        url: environments.url,
+        email: environments.email,
+        password: environments.password,
+        totp_code: environments.totp_code,
+      })
+
+      const profile = await this.profilesRepository.findByEmail({
+        email: email,
+        url: environments.url,
+        token: token,
+      })
+
+      profile.roles = profile.roles.map((item) => item.repositoryId)
+
+      const isActive = active !== undefined ? active : profile.active
+      const hasRoles = roles !== undefined ? roles : profile.roles
+
+      if (profile != undefined) {
+        const updateProfile = await this.profilesRepository.update({
+          user_id: profile.id,
+          url: environments.url,
+          token: token,
+          active: isActive,
+          roles: hasRoles,
+        })
+
+        const profileUpdated: Profile = {
+          id: updateProfile.id,
+          environment: environments.name,
+          firstName: updateProfile.firstName,
+          lastName: updateProfile.lastName,
+          email: updateProfile.email,
+          active: updateProfile.active,
+          roles: updateProfile.roles,
+        }
+
+        profileArray.push(profileUpdated)
       }
     }
 
-    if (profileArray.length == 0) {
-      throw new AppError(
-        "Profile not registered or not active in any environment."
-      )
-    } else {
-      return profileArray
-    }
+    return profileArray
   }
 }

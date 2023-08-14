@@ -6,7 +6,16 @@ import { AppError } from "@shared/errors/AppErrors"
 export class CreateEnvironmentController {
   async handle(request: Request, response: Response): Promise<Response> {
     try {
-      const { appKey, name, email, password, url, totp_code } = request.body
+      const {
+        appKey,
+        active,
+        environment,
+        name,
+        email,
+        password,
+        url,
+        totp_code,
+      } = request.body
 
       const createEnvironmentUseCase = container.resolve(
         CreateEnvironmentUseCase
@@ -14,6 +23,8 @@ export class CreateEnvironmentController {
 
       await createEnvironmentUseCase.execute({
         appKey,
+        active,
+        environment,
         name,
         email,
         password,

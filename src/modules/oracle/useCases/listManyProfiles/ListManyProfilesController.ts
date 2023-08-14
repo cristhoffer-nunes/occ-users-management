@@ -1,35 +1,35 @@
 import { Request, Response } from "express"
 import { container } from "tsyringe"
-import { UpdateProfileUseCase } from "./UpdateProfileUseCase"
+import { ListManyProfilesUseCase } from "./ListManyProfilesUseCase"
 import { AppError } from "@shared/errors/AppErrors"
 import { AxiosError } from "axios"
 
-export class UpdateProfileController {
+export class ListManyProfilesController {
   async handle(request: Request, response: Response): Promise<Response> {
     try {
-      const { email, environmentName, active, roles } = request.body
+      const { email } = request.body
 
-      const updateProfileUseCase = container.resolve(UpdateProfileUseCase)
+      const listManyProfilesUseCase = container.resolve(ListManyProfilesUseCase)
 
-      const updateProfile = await updateProfileUseCase.execute({
-        email,
-        environmentName,
-        active,
-        roles,
-      })
+      const profiles = await listManyProfilesUseCase.execute({ email })
 
-      return response.json(updateProfile)
+      if (!profiles.length) {
+        return response.json({
+          message: "Profile not registered in any environment.",
+        })
+      }
+
+      return response.json(profiles)
     } catch (err) {
       if (err instanceof AppError) {
         return response.status(err.statusCode).json({
           message: err.message,
         })
       } else if (err instanceof AxiosError) {
-        const { status, statusText, config, data } = err.response
+        const { status, statusText, config } = err.response
         return response.status(status).json({
           statusCode: status,
           message: statusText,
-          data: data,
           url: config.url,
         })
       }
