@@ -5,10 +5,12 @@ import { RequestPasswordResetController } from "@modules/oracle/useCases/request
 import { DisableProfileByManyEnvironmentsController } from "@modules/oracle/useCases/disableProfileByManyEnvironments/DisableProfileByManyEnvironmentsController"
 import { UpdateProfileController } from "@modules/oracle/useCases/updateProfile/UpdateProfileController"
 import { Router } from "express"
+import { ListAllProfilesController } from "@modules/oracle/useCases/listAllProfiles/ListAllProfilesController"
 
 const profilesRoutes = Router()
 const listManyProfilesController = new ListManyProfilesController()
 const listProfileByEmailController = new ListProfileByEmailController()
+const listAllProfilesController = new ListAllProfilesController()
 const disableProfileByManyEnvironmentsController =
   new DisableProfileByManyEnvironmentsController()
 const updateProfileController = new UpdateProfileController()
@@ -17,6 +19,7 @@ const createProfileController = new CreateProfileController()
 
 profilesRoutes.post("/list", listManyProfilesController.handle)
 profilesRoutes.post("/listByEmail", listProfileByEmailController.handle)
+profilesRoutes.post("/listAll", listAllProfilesController.handle)
 profilesRoutes.put(
   "/disableByEnvironments",
   disableProfileByManyEnvironmentsController.handle

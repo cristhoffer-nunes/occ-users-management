@@ -10,6 +10,7 @@ import { IUpdateProfileDTO } from "@modules/oracle/dtos/IUpdateProfileDTO"
 import { IRequestPasswordResetDTO } from "@modules/oracle/dtos/IRequestPasswordResetDTO"
 import { ICreateProfileDTO } from "@modules/oracle/dtos/ICreateProfileDTO"
 import { IDisableDTO } from "@modules/oracle/dtos/IDisableProfileDTO"
+import { IFindAllDTO } from "@modules/oracle/dtos/IFindAllDTO"
 
 export class ProfilesRepository implements IProfilesRepository {
   async disable({ url, user_id, token }: IDisableDTO): Promise<Profile> {
@@ -25,9 +26,9 @@ export class ProfilesRepository implements IProfilesRepository {
 
     return data
   }
-  async findAll({ url, token }: IFindByEmailDTO): Promise<Profile[]> {
+  async findAll({ url, token }: IFindAllDTO): Promise<Profile[]> {
     const { data } = await axios.get(
-      `${url}/ccadmin/v1/adminProfiles&fields=id,firstName,lastName,email,active,roles&queryFormat=SCIM`,
+      `${url}/ccadmin/v1/adminProfiles?fields=id,firstName,lastName,email,active,roles&queryFormat=SCIM`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -138,7 +139,7 @@ export class ProfilesRepository implements IProfilesRepository {
     roles,
   }: IUpdateProfileDTO): Promise<Profile> {
     const { data } = await axios.put(
-      `${url}/ccadmin/v1/adminProfiles/${user_id}?fields=id,firstName,lastName,email,active&queryFormat=SCIM`,
+      `${url}/ccadmin/v1/adminProfiles/${user_id}?fields=id,firstName,lastName,email,active,roles&queryFormat=SCIM`,
       { active: active, roles: roles },
       {
         headers: {
