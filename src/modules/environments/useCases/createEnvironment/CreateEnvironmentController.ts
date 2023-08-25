@@ -6,6 +6,15 @@ import { AppError } from "@shared/errors/AppErrors"
 export class CreateEnvironmentController {
   async handle(request: Request, response: Response): Promise<Response> {
     try {
+
+      const requiredFields = ['appKey','active','environment','name','email','password','url','totp_code']
+
+      for(const field of requiredFields){
+        if(!request.body[field]){
+          throw new AppError(`Missing required field: ${field}`)
+        }
+      }
+
       const {
         appKey,
         active,
