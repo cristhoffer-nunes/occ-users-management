@@ -1,11 +1,14 @@
 import "reflect-metadata"
 import "../../container"
+import * as dotenv from 'dotenv'
 import swaggerFile from "../../../../swagger-output.json"
 import { serve, setup } from "swagger-ui-express"
 
 import express from "express"
 import { router } from "@shared/infra/http/routes"
 
+
+dotenv.config()
 const app = express()
 
 app.use(express.json())
