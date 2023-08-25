@@ -2,7 +2,6 @@ import { EnvironmentsRepository } from "@modules/environments/infra/prisma/Envir
 import { ProfilesRepository } from "@modules/oracle/infra/axios/ProfilesRepository"
 import { Profile } from "@modules/oracle/infra/entities/Profile"
 import { AppError } from "@shared/errors/AppErrors"
-import { TOTPGenerator } from "@shared/utils/TOTPGenerator"
 import { inject, injectable } from "tsyringe"
 
 interface IRequest {
@@ -24,7 +23,7 @@ export class ListProfileByEmailUseCase {
     const environments = await this.environmentsRepository.findByName(
       environmentName
     )
-    
+
     const token = await this.profilesRepository.login({
       url: environments.url,
       appKey: environments.appKey
